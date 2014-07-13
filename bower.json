@@ -1,0 +1,25 @@
+{
+  "name": "white.js",
+  "version": "0.0.0",
+  "authors": [
+    "chase"
+  ],
+  "description": "A corperative online editor",
+  "keywords": [
+    "corperative",
+    "editor"
+  ],
+  "license": "BSD",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "backbone": "~1.1.2"
+  }
+}
