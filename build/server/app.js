@@ -1,16 +1,15 @@
-var io;
+var app, express, io, path, server;
 
-io = require('socket.io').listen(process.env.PORT || 8000);
+express = require('express');
 
-io.of('test').on('connection', function(socket) {
-  console.log('connected');
-  socket.emit('test', {
-    msg: 'Hello World'
-  });
-  socket.on('res', function(from, data) {
-    return console.log(from, data);
-  });
-  return socket.on('disconnect', function() {
-    return console.log('User disconnected');
-  });
-});
+path = require('path');
+
+app = express();
+
+server = require('http').Server(app);
+
+io = require('socket.io')(server);
+
+app.use('/', express["static"](path.join(__dirname, '../client/')));
+
+server.listen(process.env.PORT || 8000);

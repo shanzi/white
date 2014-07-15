@@ -1,9 +1,16 @@
-io = require('socket.io').listen(process.env.PORT || 8000)
+express = require 'express'
+path = require 'path'
 
-io.of('test').on 'connection', (socket) ->
-  console.log 'connected'
-  socket.emit 'test', msg: 'Hello World'
-  socket.on 'res', (from, data) ->
-    console.log from, data
-  socket.on 'disconnect', () ->
-    console.log 'User disconnected'
+app = express()
+server = require('http').Server(app)
+io = require('socket.io')(server)
+
+
+app.use('/', express.static(path.join(__dirname, '../client/')))
+
+#io.of('/test').on 'connection', (socket) ->
+#  console.log 'connected'
+#  socket.on 'disconnect', () ->
+#    console.log 'User disconnected'
+#
+server.listen(process.env.PORT || 8000)

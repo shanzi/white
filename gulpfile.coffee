@@ -6,6 +6,7 @@ concat = require 'gulp-concat'
 coffee = require 'gulp-coffee'
 nodemon = require 'gulp-nodemon'
 
+mold = require 'mold-source-map'
 source = require 'vinyl-source-stream'
 browserify = require 'browserify'
 
@@ -24,6 +25,11 @@ gulp.task 'client:coffee', () ->
     .add('./client/coffee/main.coffee')
     .transform('coffeeify')
     .bundle({debug: true})
+    .pipe(mold.transform(
+      (sourcemap, callback) ->
+        sourcemap.sourceRoot('file://')
+        callback(sourcemap.toComment())
+    ))
     .pipe(source('client.js'))
     .pipe(gulp.dest("#{BUILD_CLIENT}/js"))
   
@@ -33,18 +39,29 @@ gulp.task 'client:stylus',  () ->
     .pipe(concat('style.css'))
     .pipe(gulp.dest("#{BUILD_CLIENT}/css"))
 
+gulp.task 'client:resource', () ->
+  gulp.src('./client/index.html')
+    .pipe(gulp.dest(BUILD_CLIENT))
+
 gulp.task 'server:coffee', () ->
   gulp.src('./server/**/*.coffee')
     .pipe(coffee({bare:true}).on('error', gutil.log))
     .pipe(gulp.dest(BUILD_SERVER))
 
-gulp.task 'client', ['client:coffee', 'client:stylus']
+gulp.task 'client', ['client:coffee', 'client:stylus', 'client:resource']
 gulp.task 'server', ['server:coffee']
+
+gulp.task 'watch', () ->
+  gulp.watch ['./client/stylus/**/*.stylus'], ['client:stylus']
+  gulp.watch ['./client/coffee/**/*.coffee'], ['client:coffee']
+  gulp.watch ['./server/**/*.coffee'], ['server:coffee']
+  gulp.watch ['./client/index.html'], ['client:resource']
+  return
 
 gulp.task 'nodemon', ['server'] ,() ->
   nodemon({
     script: './build/server/app.js'
-    ignore: ['./build/client/*']
+    watch: 'build/server/**/*.js'
     ext: 'js'
     env: {
       DEVELOPMENT: true
@@ -53,5 +70,5 @@ gulp.task 'nodemon', ['server'] ,() ->
   })
 
 gulp.task 'build', ['client', 'server']
-gulp.task 'default', ['client', 'nodemon']
+gulp.task 'default', ['client', 'nodemon', 'watch']
 
