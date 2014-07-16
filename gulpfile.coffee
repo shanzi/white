@@ -34,7 +34,7 @@ gulp.task 'client:coffee', () ->
     .pipe(gulp.dest("#{BUILD_CLIENT}/js"))
   
 gulp.task 'client:stylus',  () ->
-  gulp.src('./client/stylus/**/*.styl')
+  gulp.src('./client/stylus/main.styl')
     .pipe(stylus())
     .pipe(concat('style.css'))
     .pipe(gulp.dest("#{BUILD_CLIENT}/css"))
