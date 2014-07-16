@@ -52,7 +52,7 @@ gulp.task 'client', ['client:coffee', 'client:stylus', 'client:resource']
 gulp.task 'server', ['server:coffee']
 
 gulp.task 'watch', () ->
-  gulp.watch ['./client/stylus/**/*.stylus'], ['client:stylus']
+  gulp.watch ['./client/stylus/**/*.styl'], ['client:stylus']
   gulp.watch ['./client/coffee/**/*.coffee'], ['client:coffee']
   gulp.watch ['./server/**/*.coffee'], ['server:coffee']
   gulp.watch ['./client/index.html'], ['client:resource']
