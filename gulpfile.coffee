@@ -6,6 +6,7 @@ concat = require 'gulp-concat'
 coffee = require 'gulp-coffee'
 nodemon = require 'gulp-nodemon'
 
+path = require 'path'
 mold = require 'mold-source-map'
 source = require 'vinyl-source-stream'
 browserify = require 'browserify'
@@ -16,22 +17,26 @@ BUILD = './build'
 BUILD_SERVER = "#{BUILD}/server"
 BUILD_CLIENT = "#{BUILD}/client"
 
+bower = (p) ->
+  path.join(__dirname, './bower_components', p)
+
 
 gulp.task 'client:coffee', () ->
-  browserify()
-    .require('./bower_components/underscore/underscore.js', {expose: 'underscore'})
-    .require('./bower_components/backbone/backbone.js', {expose: 'backbone'})
-    .require('./bower_components/jquery/dist/jquery.js', {expose: 'jquery'})
-    .add('./client/coffee/main.coffee')
-    .transform('coffeeify')
-    .bundle({debug: true})
-    .pipe(mold.transform(
-      (sourcemap, callback) ->
-        sourcemap.sourceRoot('file://')
-        callback(sourcemap.toComment())
+  browserify extensions: ['.coffee'], basedir: path.join(__dirname, 'client/coffee/')
+    .require bower('underscore/underscore.js'), expose: 'underscore'
+    .require bower('backbone/backbone.js'), expose: 'backbone'
+    .require bower('jquery/dist/jquery.js'), expose: 'jquery'
+    .add './main.coffee'
+    .transform 'coffeeify'
+    .bundle debug: true
+    .pipe(
+      mold.transform(
+        (sourcemap, callback) ->
+          sourcemap.sourceRoot 'file://'
+          callback sourcemap.toComment()
     ))
-    .pipe(source('client.js'))
-    .pipe(gulp.dest("#{BUILD_CLIENT}/js"))
+    .pipe source('client.js')
+    .pipe gulp.dest("#{BUILD_CLIENT}/js")
   
 gulp.task 'client:stylus',  () ->
   gulp.src('./client/stylus/main.styl')
