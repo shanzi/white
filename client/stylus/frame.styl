@@ -8,6 +8,19 @@
   header
     padding 10px 0
 
+    .placeholder
+      color #CCC
+      position absolute
+      transition opacity 0.25s ease-out
+      opacity 0
+
+      &.show
+        opacity 1
+
+    .content
+      z-index 999
+      min-height 1em
+
   [contentEditable]:focus
     outline 0px solid transparent
 

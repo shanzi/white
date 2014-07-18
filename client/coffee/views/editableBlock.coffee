@@ -22,16 +22,18 @@ EditableBlockView = Backbone.View.extend
       range.setEnd(ec, eo)
       selection.removeAllRanges()
       selection.addRange(range)
-      @$el.focus()
-      popup.show()
 
   requestEdit: (range, callback) ->
     @_safeExec =>
       callback()
       @loadContents range
       @$el.attr('contentEditable', true)
+      @$el.focus()
+      @startObserveMutation()
+    popup.show()
 
   resignEdit: ->
+    @stopObserveMutation()
     @releaseContents()
     @$el.blur()
     @$el.removeAttr('contentEditable')
@@ -41,12 +43,12 @@ EditableBlockView = Backbone.View.extend
     console.log mutations
 
   startObserveMutation: ->
-    observer = @observer or (new MutationObserver((m) => @mutationCallback(m)))
-    observer.observe @el, {childList: true, charactorData: true}
-    observer.takeRecords()
+    @observer ?= new MutationObserver((m) => @mutationCallback(m))
+    @observer.observe @el, {childList: true, characterData: true, subtree: true}
+    @observer.takeRecords()
 
   stopObserveMutation: ->
-    @observe.disconnect() if @observe
+    @observer.disconnect() if @observer
 
   releaseContents: ->
     children = @$el.children()

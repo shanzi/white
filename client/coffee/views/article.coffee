@@ -9,20 +9,13 @@ ArticleView = Backbone.View.extend
   currentEditingBlock: null
 
   initialize: ->
-    $(document).on 'mouseup', (e) =>
-      originEvent = e.originalEvent
-
-      if @$el.has(originEvent.originalTarget).length > 0
-        @checkTextSelection()
-      else
-        @currentEditingBlock.resignEdit() if @currentEditingBlock
-        @currentEditingBlock = null
+    $(document).on 'mouseup', (e) => @checkTextSelection()
 
   checkTextSelection: ->
     selection = window.getSelection()
     range = selection.getRangeAt(0)
     commonAncester = range.commonAncestorContainer
-    if @$el.has(commonAncester) or commonAncester == @el
+    if @$el.has(commonAncester).length or commonAncester == @el
       return if $(commonAncester).closest('section').length > 0
 
       oldBlock = @currentEditingBlock
@@ -38,5 +31,9 @@ ArticleView = Backbone.View.extend
       requestRange = all[0.._.indexOf(all, end.get(0))]
       @currentEditingBlock.requestEdit requestRange, =>
         oldBlock.resignEdit() if oldBlock
+    else
+      @currentEditingBlock.resignEdit() if @currentEditingBlock
+      @currentEditingBlock = null
+      
 
 module.exports = ArticleView

@@ -1,4 +1,5 @@
 popup-color = rgba(0, 0, 0, 0.9)
+popup-shadow = 0 1px 5px black 
 popup-font-color = #FFF
 popup-font-size = 24px
 popup-item-size = 30px
@@ -11,16 +12,19 @@ popup-size(item-count, item-size=popup-item-size, $padding=popup-padding)
   margin-left unit(-($padding * 2 + item-size * item-count)/2, px)
 
 .white-popup
+  box-sizing border-box
   
   position absolute
-  transition opacity 250ms ease-out
+  transition opacity 150ms ease-in, padding-top 100ms ease-out
   opacity 1
 
   top -999px
   left -999px
+  padding-top 0
 
   &.hidden
     opacity 0
+    padding-top 10px
 
   .options
     background popup-color
@@ -28,6 +32,7 @@ popup-size(item-count, item-size=popup-item-size, $padding=popup-padding)
     overflow hidden
     transition width 0.25s ease-in-out, margin-left 0.25s ease-in-out
     popup-size(7)
+    box-shadow popup-shadow
 
     &.header-pop
       popup-size(4)

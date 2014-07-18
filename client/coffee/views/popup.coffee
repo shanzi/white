@@ -37,18 +37,23 @@ PopupView = Backbone.View.extend
     $(document.body).append(@el)
 
   moveTo: (x, y) ->
-    y -= @$el.height() + 5
-    @$el.offset {left:x, top:y}
+    @$el.offset {left:x, top: y}
 
-  toggleDisplay: utils.debounce 300, (show, x, y) ->
-    if show and @$el.hasClass('hidden')
-      @moveTo x, y
-      @$el.removeClass('hidden')
+  toggleDisplay: utils.debounce 200, (show, x, y) ->
+    if show
+      if @$el.hasClass('hidden')
+        @moveTo x, y
+        @$el.removeClass('hidden')
+      else
+        offset = @$el.offset()
+        if Math.abs(offset.left - x) > 100 or Math.abs(offset.top - y) > 100
+          @$el.addClass('hidden')
+          utils.delay 150, => @toggleDisplay(show, x, y) if show
+        else
+          @moveTo x, y
     else
       @$el.addClass('hidden')
-      utils.delay 250, =>
-        @toggleDisplay(show, x, y) if show
-        @moveTo -999, -999
+      utils.delay 150, => @moveTo -999, -999
 
   showAtPoint: (x, y) ->
     @toggleDisplay true, x, y
@@ -70,10 +75,11 @@ PopupView = Backbone.View.extend
     range ?= window.getSelection().getRangeAt(0)
     boundary = range.getBoundingClientRect()
     x = (boundary.left + boundary.right)/2
-    y = boundary.top + window.pageYOffset
+    y = boundary.top + window.pageYOffset - 60
+    console.log y
     return [x, y]
 
-  windowResizing: utils.throttle 70, ->
+  windowResizing: ->
     [x, y] = @positionForRange()
     @moveTo(x, y)
 
