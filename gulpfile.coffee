@@ -5,6 +5,7 @@ stylus = require 'gulp-stylus'
 concat = require 'gulp-concat'
 coffee = require 'gulp-coffee'
 nodemon = require 'gulp-nodemon'
+svg = require 'gulp-svg-symbols'
 
 path = require 'path'
 mold = require 'mold-source-map'
@@ -47,6 +48,9 @@ gulp.task 'client:stylus',  () ->
 gulp.task 'client:resource', () ->
   gulp.src('./client/index.html')
     .pipe(gulp.dest(BUILD_CLIENT))
+  gulp.src './client/icons/*.svg'
+    .pipe svg(css: false)
+    .pipe gulp.dest "#{BUILD_CLIENT}/css/icons"
 
 gulp.task 'server:coffee', () ->
   gulp.src('./server/**/*.coffee')
@@ -60,7 +64,7 @@ gulp.task 'watch', () ->
   gulp.watch ['./client/stylus/**/*.styl'], ['client:stylus']
   gulp.watch ['./client/coffee/**/*.coffee'], ['client:coffee']
   gulp.watch ['./server/**/*.coffee'], ['server:coffee']
-  gulp.watch ['./client/index.html'], ['client:resource']
+  gulp.watch ['./client/index.html', './client/icons/*.svg'], ['client:resource']
   return
 
 gulp.task 'nodemon', ['server'] ,() ->

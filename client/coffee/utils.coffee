@@ -9,3 +9,6 @@ exports.delay = (time, func) ->
 
 exports.throttle = (time, func) ->
   _.throttle func, time
+
+exports.icon = (id) ->
+  return "<svg class='icon icon-#{id}'><use xlink:href='css/icons/svg-symbols.svg##{id}'#icon-1></use></svg>"

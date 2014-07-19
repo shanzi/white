@@ -6,15 +6,13 @@ Backbone = require 'backbone'
 
 template = _.template '''
 <div class="options">
-  <div>
-  <button class="link">a</button>
-  <button class="bold">B</button>
-  <button class="italic">I</button>
-  <button class="underline">U</button>
-  <button class="header">h</button>
-  <button class="quote">“</button>
-  <button class="comment">c</button>
-  </div>
+  <button class="link"><%= icon('chain') %></button>
+  <button class="bold"><%= icon('bold') %></button>
+  <button class="italic"><%= icon('italic') %></button>
+  <button class="underline"><%= icon('underline') %></button>
+  <button class="header1"><%= icon('h1') %></button>
+  <button class="header2"><%= icon('h2') %></button>
+  <button class="quote"><%= icon('quote-left') %></button>
 </div>
 '''
 
@@ -33,7 +31,7 @@ PopupView = Backbone.View.extend
     @render()
 
   render: _.once ->
-    @$el.html(@template())
+    @$el.html(@template(icon:utils.icon))
     $(document.body).append(@el)
 
   moveTo: (x, y) ->
@@ -75,7 +73,7 @@ PopupView = Backbone.View.extend
     range ?= window.getSelection().getRangeAt(0)
     boundary = range.getBoundingClientRect()
     x = (boundary.left + boundary.right)/2
-    y = boundary.top + window.pageYOffset - 60
+    y = boundary.top + window.pageYOffset - 50
     console.log y
     return [x, y]
 

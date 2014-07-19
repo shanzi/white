@@ -13,8 +13,11 @@ ArticleView = Backbone.View.extend
 
   checkTextSelection: ->
     selection = window.getSelection()
+    return if selection.rangeCount == 0
     range = selection.getRangeAt(0)
     commonAncester = range.commonAncestorContainer
+    console.log selection
+    console.log range
     if @$el.has(commonAncester).length or commonAncester == @el
       return if $(commonAncester).closest('section').length > 0
 

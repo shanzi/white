@@ -1,7 +1,7 @@
 popup-color = rgba(0, 0, 0, 0.9)
 popup-shadow = 0 1px 5px black 
-popup-font-color = #FFF
-popup-font-size = 24px
+popup-icon-color = rgba(255,255,255, 0.9)
+popup-icon-color-active = #69f
 popup-item-size = 30px
 popup-padding = 5px
 
@@ -12,8 +12,6 @@ popup-size(item-count, item-size=popup-item-size, $padding=popup-padding)
   margin-left unit(-($padding * 2 + item-size * item-count)/2, px)
 
 .white-popup
-  box-sizing border-box
-  
   position absolute
   transition opacity 150ms ease-in, padding-top 100ms ease-out
   opacity 1
@@ -21,6 +19,10 @@ popup-size(item-count, item-size=popup-item-size, $padding=popup-padding)
   top -999px
   left -999px
   padding-top 0
+
+  box-sizing border-box
+  *
+    box-sizing border-box
 
   &.hidden
     opacity 0
@@ -33,9 +35,6 @@ popup-size(item-count, item-size=popup-item-size, $padding=popup-padding)
     transition width 0.25s ease-in-out, margin-left 0.25s ease-in-out
     popup-size(7)
     box-shadow popup-shadow
-
-    &.header-pop
-      popup-size(4)
 
     &:before
       content ""
@@ -51,24 +50,23 @@ popup-size(item-count, item-size=popup-item-size, $padding=popup-padding)
       border-color popup-color transparent transparent
 
     button
-      width 30px
-      height 30px
-      background transparent
-      color popup-font-color
+      background-color transparent
       font-family 'Alegreya', serif
-      font-size popup-font-size
       font-weight normal
       border none
       display block
       float left
+      width 30px
+      height 30px
       
       &.link, &.underline
-        text-decoration underline
+        border-right 1px solid #444
 
-      &.bold, &.header
-        font-weight bold
+      &.active .icon
+        fill popup-icon-color-active
 
-      &.italic
-        font-style italic
-
-
+      .icon
+        fill popup-icon-color
+        width 20px
+        height 20px
+        margin 5px 0
