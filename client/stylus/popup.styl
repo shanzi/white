@@ -5,11 +5,14 @@ popup-icon-color-active = #69f
 popup-item-size = 30px
 popup-padding = 5px
 
-popup-size(item-count, item-size=popup-item-size, $padding=popup-padding)
+popup-size(item-count, group-count=3, item-size=popup-item-size, $padding=popup-padding)
   padding unit($padding, px)
   height unit(($padding * 2 + item-size), px)
-  width unit(($padding * 2 + item-size * item-count), px)
-  margin-left unit(-($padding * 2 + item-size * item-count)/2, px)
+  width unit(($padding * 2 + item-size * item-count + group-count - 1), px)
+  margin-left unit(-($padding * 2 + item-size * item-count + group-count - 1)/2, px)
+
+group-size(item-count, right=1)
+  width unit((item-count * popup-item-size + right), px)
 
 .white-popup
   position absolute
@@ -21,21 +24,28 @@ popup-size(item-count, item-size=popup-item-size, $padding=popup-padding)
   padding-top 0
 
   box-sizing border-box
+
   *
     box-sizing border-box
 
   &.hidden
     opacity 0
     padding-top 10px
+    
+    .options 
+      transition none
+      .group
+        transition none
 
   .options
     background popup-color
     border-radius 4px
     overflow hidden
-    transition width 0.25s ease-in-out, margin-left 0.25s ease-in-out
     popup-size(7)
     box-shadow popup-shadow
-
+    transition width 0.25s ease-in-out, margin-left 0.25s ease-in-out
+    white-space no-wrap
+    
     &:before
       content ""
       position absolute
@@ -49,6 +59,46 @@ popup-size(item-count, item-size=popup-item-size, $padding=popup-padding)
       border-style solid
       border-color popup-color transparent transparent
 
+    &>div
+      group-size(10)
+      height popup-item-size
+
+    .group
+      display block
+      float left
+      overflow hidden
+      white-space: nowrap
+      transition width 150ms ease-out, opacity 150ms ease-out, border-color 150ms ease-out
+      height popup-item-size
+
+      &.group-link, &.group-style
+        border-right 1px solid rgba(100, 100, 100, 0.4)
+
+      &.group-link
+        group-size(1)
+
+        input
+          float left
+          border none
+          border-radius 2px
+          group-size(7, 0)
+          height popup-item-size
+          font-size 18px
+
+      &.group-link>div
+        group-size(9)
+      &.group-style>div
+        group-size(3)
+      &.group-type>div
+        group-size(3, 0)
+        
+      &.group-style
+        group-size(3)
+
+      &.group-type
+        group-size(3, 0)
+
+
     button
       background-color transparent
       font-family 'Alegreya', serif
@@ -56,12 +106,9 @@ popup-size(item-count, item-size=popup-item-size, $padding=popup-padding)
       border none
       display block
       float left
-      width 30px
-      height 30px
+      width popup-item-size
+      height popup-item-size
       
-      &.link, &.underline
-        border-right 1px solid #444
-
       &.active .icon
         fill popup-icon-color-active
 
@@ -70,3 +117,19 @@ popup-size(item-count, item-size=popup-item-size, $padding=popup-padding)
         width 20px
         height 20px
         margin 5px 0
+
+    &.status-header
+      popup-size(3)
+      .group.group-link, .group.group-style
+        width 0
+        opacity 0
+
+    &.status-link
+      popup-size(9)
+      .group.group-link
+        group-size(9)
+        border-color transparent
+      .group.group-style, .group.group-type
+          width 0
+          opacity 0
+

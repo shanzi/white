@@ -12,3 +12,28 @@ exports.throttle = (time, func) ->
 
 exports.icon = (id) ->
   return "<svg class='icon icon-#{id}'><use xlink:href='css/icons/svg-symbols.svg##{id}'#icon-1></use></svg>"
+
+exports.selection =
+  _rangeStack: []
+  _pushRange: (range)->
+    exports.selection._rangeStack.push range
+  _popRange: ()->
+    return exports.selection._rangeStack.pop()
+  save: ->
+    selection = window.getSelection()
+    range = selection.getRangeAt(0)
+    exports.selection._pushRange
+      start: range.startContainer
+      end: range.endContainer
+      startOffset: range.startOffset
+      endOffset: range.endOffset
+  restore: ->
+    _savedRange = exports.selection._popRange()
+    if _savedRange
+      range = document.createRange()
+      range.setStart(_savedRange.start, _savedRange.startOffset)
+      range.setEnd(_savedRange.end, _savedRange.endOffset)
+      selection = window.getSelection()
+      selection.removeAllRanges()
+      selection.addRange(range)
+

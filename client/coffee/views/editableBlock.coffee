@@ -1,4 +1,5 @@
 $ = require 'jquery'
+utils = require '../utils'
 popup = require './popup'
 Backbone = require 'backbone'
 
@@ -12,16 +13,9 @@ EditableBlockView = Backbone.View.extend
     range = selection.getRangeAt(0)
     commonAncester = range.commonAncestorContainer
     if @el == commonAncester or @$el.has(commonAncester)
-      sc = range.startContainer
-      so = range.startOffset
-      ec = range.endContainer
-      eo = range.endOffset
+      utils.selection.save()
       callback()
-      range = document.createRange()
-      range.setStart(sc, so)
-      range.setEnd(ec, eo)
-      selection.removeAllRanges()
-      selection.addRange(range)
+      utils.selection.restore()
 
   requestEdit: (range, callback) ->
     @_safeExec =>
@@ -54,7 +48,6 @@ EditableBlockView = Backbone.View.extend
     children = @$el.children()
     @$el.children().remove()
     children.insertAfter(@$el)
-    @$el.remove()
 
   loadContents: (contents) ->
     @$el.insertBefore(contents[0])
