@@ -152,7 +152,6 @@ PopupView = Backbone.View.extend
     @toggleLinkMode()
     val = @linkInput.val().trim()
     if val
-      console.log window.getSelection()
       document.execCommand 'createLink', false, val
     else
       document.execCommand 'unlink'
@@ -186,8 +185,19 @@ PopupView = Backbone.View.extend
     document.execCommand 'formatBlock', false, tag
     @preparePopup()
 
-  eventMask: ->
+  eventMask: (e) ->
+    @webkitFix(e)
     return false
+
+  webkitFix: (e) ->
+    console.log e
+    if e.toElement and e.toElement.tagName.toLowerCase() == 'path'
+      target = e.toElement
+      while target.parentElement
+        target = target.parentElement
+      svg = @$el.find('.icon-' + $(target).attr('id'))
+      button = svg.parent()
+      button.click()
 
   events:
     'mouseup': 'eventMask'
