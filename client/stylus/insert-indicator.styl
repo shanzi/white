@@ -1,0 +1,18 @@
+indicator-size = 30px
+indicator-fill = #A4E786
+
+.white-insert-indicator
+  height indicator-size
+  width indicator-size
+  cursor pointer
+  position absolute
+
+  &.hidden
+    transition opacity 2s ease-in-out
+    opacity 0
+
+  .icon
+    fill indicator-fill
+    width 100%
+    height 100%
+    

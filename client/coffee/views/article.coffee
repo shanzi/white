@@ -17,10 +17,11 @@ ArticleView = Backbone.View.extend
     range = selection.getRangeAt(0)
     commonAncester = range.commonAncestorContainer
     if @$el.has(commonAncester).length or commonAncester == @el
-      return if $(commonAncester).closest('section').length > 0
+      return if not @shouldRequestEdit(commonAncester)
 
       oldBlock = @currentEditingBlock
       @currentEditingBlock = new EditableBlockView()
+      range = selection.getRangeAt(0)
 
       startNode = range.startContainer
       endNode = range.endContainer
@@ -32,10 +33,37 @@ ArticleView = Backbone.View.extend
       requestRange = all[0.._.indexOf(all, end.get(0))]
       @currentEditingBlock.requestEdit requestRange, =>
         oldBlock.resignEdit() if oldBlock
-    else if @currentEditingBlock
+    else
+      @resignCurrent()
+
+  insertParagraphAfter: (elem) ->
+    if @currentEditingBlock
+      @currentEditingBlock.resignEdit()
+      @currentEditingBlock.remove()
+    @currentEditingBlock = new EditableBlockView()
+    @currentEditingBlock.requestNew elem, =>
+      if elem
+        @currentEditingBlock.$el.insertAfter elem
+      else
+        @currentEditingBlock.$el.prependTo @$el
+
+  resignCurrent: ->
+    if @currentEditingBlock
       @currentEditingBlock.resignEdit()
       @currentEditingBlock.remove()
       @currentEditingBlock = null
-      
+
+  shouldRequestEdit: (element) ->
+    section = $(element).closest('section')
+    return true if section.length == 0
+    if @currentEditingBlock
+      blockEle = @currentEditingBlock.$el
+      if blockEle.has(element) and blockEle.children().length > 1
+        utils.selection.save()
+        @resignCurrent()
+        utils.selection.restore()
+        return true
+    return false
+
 
 module.exports = ArticleView

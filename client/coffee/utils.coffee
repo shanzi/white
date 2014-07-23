@@ -23,6 +23,7 @@ exports.selection =
     exports.selection._rangeStack.push range
   _popRange: ()->
     return exports.selection._rangeStack.pop()
+
   save: ->
     selection = window.getSelection()
     range = selection.getRangeAt(0)
@@ -31,6 +32,7 @@ exports.selection =
       end: range.endContainer
       startOffset: range.startOffset
       endOffset: range.endOffset
+
   restore: ->
     _savedRange = exports.selection._popRange()
     if _savedRange
@@ -40,4 +42,14 @@ exports.selection =
       selection = window.getSelection()
       selection.removeAllRanges()
       selection.addRange(range)
+
+  placeCursor: (node) ->
+    module.exports.delay 100, =>
+      range = document.createRange()
+      range.selectNode(node)
+      selection = window.getSelection()
+      selection.removeAllRanges()
+      selection.addRange(range)
+      selection.collapseToEnd()
+      console.log selection.getRangeAt(0)
 
